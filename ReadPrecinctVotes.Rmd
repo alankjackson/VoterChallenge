@@ -1,0 +1,28 @@
+---
+title: "Read Precinct Votes"
+author: "Alan Jackson"
+date: "August 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(tabulizer) # for reading pdf's
+
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Read in Harris County precinct vote data for November 2016
+
+
+```{r read harris data}
+
+folder="/home/ajackson/Dropbox/Rprojects/VoterChallenge/"
+file="canvass.pdf"
+
+
+
+
+```
+
