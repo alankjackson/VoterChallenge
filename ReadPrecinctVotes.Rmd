@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(tabulizer) # for reading pdf's
+library(pdftools)
 
 
 knitr::opts_chunk$set(echo = TRUE)
@@ -21,7 +22,57 @@ knitr::opts_chunk$set(echo = TRUE)
 folder="/home/ajackson/Dropbox/Rprojects/VoterChallenge/"
 file="canvass.pdf"
 
+path <- paste0(folder, file)
 
+#a <- extract_tables(path)
+x <- pdftools::pdf_text(path)
+dat <- strsplit(x, '\n')
+#for (i in 1:length(dat)) {
+#  a <- dat[[i]]
+#  print(paste(i, trimws(a[5])))
+#}
+#     Function for reading 30 pages from file for a single race
+ReadRace <- function(dat, ibeg, jbeg){ # input data and starting page number, good line
+  #   initialize data frame
+  n <- 1012
+  output <- data.frame(Precinct=integer(n),
+                       EarlyBallots=integer(n),
+                       ElectionBallots=integer(n),
+                       RegisteredVoters=integer(n),
+                       Republican=integer(n),
+                       Democrat=integer(n),
+                       Libertarian=integer(n),
+                       Green=integer(n),
+                       stringsAsFactors = FALSE)
+  
+  for (i in ibeg:(ibeg+29)) { # iterate over pages
+    a <- dat[[i]] # data for one page
+    for (j in jbeg:(jbeg+33)) {# iterate throuigh lines for page
+      outindex <- j-jbeg+1+(i-ibeg)*34
+      if (outindex > 1012) {next}
+      b <- unlist(strsplit(gsub(",","",a[j]), "\\s+"))
+      output$Precinct[outindex] <- as.numeric(b[1])
+      output$EarlyBallots[outindex] <- as.numeric(b[2])
+      output$ElectionBallots[outindex] <- as.numeric(b[3])
+      output$RegisteredVoters[outindex] <- as.numeric(b[5])
+      output$Republican[outindex] <- as.numeric(b[7])
+      output$Democrat[outindex] <- as.numeric(b[8])
+      output$Libertarian[outindex] <- as.numeric(b[9])
+      output$Green[outindex] <- as.numeric(b[10])
+    }
+  }
+  return(output)
+}
+
+#   loop through first 2 "races"
+
+race <- c("Straight Party", "President")
+jbeg <- c(15,23)
+
+for (i in 1:2) {
+  output <- ReadRace(dat, (i-1)*30+1, jbeg[i])
+  saveRDS(output, paste0(folder, gsub("\\s","_", race[i]),".rds"))
+}
 
 
 ```
