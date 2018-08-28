@@ -1,0 +1,29 @@
+---
+title: "CheckVoter"
+author: "Alan Jackson"
+date: "August 26, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(RCurl)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Access website and check voter address
+
+```{r access and check}
+
+url <- "https://www.hctax.net/Voter/Search"
+
+# form name = voterSearch
+# id=SearchType name="T" value="Address"
+# input id=SearchInput class=searchText name=S type=text
+# class=searchButton value=Search type=submit
+
+testaddr <- "1311 Tulane Houston 77008"
+
+
+```
+
